@@ -1,0 +1,28 @@
+{
+  "name": "nestjs-nats-streaming-transport",
+  "version": "1.0.0",
+  "description": "Nats Streaming Transport for NestJS",
+  "main": "dist/index",
+  "types": "dist/index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist && tsc"
+  },
+  "author": "Bernt Anker",
+  "license": "ISC",
+  "dependencies": {
+    "node-nats-streaming": "^0.3.2",
+    "rxjs": "^6.5.5",
+    "shortid": "^2.2.15"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^7.2.0",
+    "@nestjs/core": "^7.2.0",
+    "@nestjs/microservices": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.14",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
+  }
+}
