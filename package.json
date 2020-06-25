@@ -1,9 +1,15 @@
 {
-  "name": "nestjs-nats-streaming-transport",
+  "name": "@nestjs-plugins/nestjs-nats-streaming-transport",
   "version": "1.0.0",
   "description": "Nats Streaming Transport for NestJS",
   "main": "dist/index",
   "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "nestjs transport microservices"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist && tsc"
