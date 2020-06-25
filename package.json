@@ -8,13 +8,13 @@
     "dist"
   ],
   "keywords": [
-    "nestjs transport microservices"
+    "nestjs transport microservices nats-streaming"
   ],
   "scripts": {
     "test": "echo \"no test specified\"",
     "build": "rimraf dist && tsc"
   },
-  "author": "Bernt Anker",
+  "author": "Bernt Anker (bernt.anker@gmail.com)",
   "license": "ISC",
   "dependencies": {
     "node-nats-streaming": "^0.3.2",
