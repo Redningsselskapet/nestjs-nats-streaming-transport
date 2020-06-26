@@ -4,9 +4,6 @@
   "description": "Nats Streaming Transport for NestJS",
   "main": "dist/index",
   "types": "dist/index",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "files": [
     "dist"
   ],
