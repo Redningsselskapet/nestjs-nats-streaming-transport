@@ -1,7 +1,7 @@
 import { BaseRpcContext } from '@nestjs/microservices/ctx-host/base-rpc.context';
 import { Message } from 'node-nats-streaming';
 
-type NatsStreamingContextArgs = [Message];
+export type NatsStreamingContextArgs = [Message];
 
 export class NatsStreamingContext extends BaseRpcContext<
   NatsStreamingContextArgs
@@ -10,7 +10,7 @@ export class NatsStreamingContext extends BaseRpcContext<
     super(args);
   }
 
-  get message() {
+  get message(): Message {
     return this.args[0];
   }
 }
