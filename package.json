@@ -1,11 +1,12 @@
 {
   "name": "@nestjs-plugins/nestjs-nats-streaming-transport",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Nats Streaming Transport for NestJS",
   "main": "dist/index",
   "types": "dist/index",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
-  
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "files": [
     "dist"
   ],
