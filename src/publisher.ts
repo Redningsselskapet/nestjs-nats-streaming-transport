@@ -48,18 +48,18 @@ export class Publisher extends ClientProxy {
     };
   }
 
-  protected async dispatchEvent<T = void>(
+  protected async dispatchEvent(
     packet: ReadPacket<{ pattern: string; data: any }>,
-  ): Promise<T> {
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.connection.publish(
+      const guid = this.connection.publish(
         packet.pattern,
         JSON.stringify(packet.data),
         err => {
           if (err) {
             reject(err);
           }
-          resolve();
+          resolve(guid);
         },
       );
     });
