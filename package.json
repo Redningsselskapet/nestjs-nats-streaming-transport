@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "test": "echo \"no test specified\"",
-    "build": "rimraf dist && tsc"
+    "build": "rimraf dist && tsc",
+    "watch": "tsc -w"
   },
   "author": "Bernt Anker (bernt.anker@gmail.com)",
   "license": "ISC",
