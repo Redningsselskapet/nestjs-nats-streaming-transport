@@ -10,7 +10,11 @@ Build Event Driven Microservices Architecture with Nats Streaming Server and Nes
 
 Exposes the node-nats-streaming library through @ctx context object.
 
+## Install
 
+```bash
+npm i @nestjs/microservices
+```
 
 ## TransportConnectOptions
 - **ackTimeout** (number: default: 30000) - Timeout for the server to receive acknowledgement messages from the client in milliseconds.
