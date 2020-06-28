@@ -12,7 +12,7 @@ export class Publisher extends ClientProxy {
   constructor(
     private clusterID: string,
     private clientID: string,
-    private connectOptions: TransportConnectOptions,
+    private connectOptions: TransportConnectOptions
   ) {
     super();
     this.logger = new Logger(this.constructor.name);
@@ -25,9 +25,9 @@ export class Publisher extends ClientProxy {
     this.connection = await createConnection(
       this.clusterID,
       this.clientID,
-      this.connectOptions,
+      this.connectOptions
     );
-    this.logger.log('Publisher - Connected to nats...');
+    this.logger.log('Publisher - Connected to nats.');
   }
 
   close() {
@@ -36,31 +36,35 @@ export class Publisher extends ClientProxy {
 
   protected publish(
     packet: ReadPacket<any>,
-    callback: (packet: WritePacket<any>) => void,
+    callback: (packet: WritePacket) => any
   ): Function {
-    // const packet = this.assignPacketId(partialPacket);
-    return () => {
-      this.connection.publish(
-        packet.pattern,
-        packet as any,
-        err => err && callback({ err }),
-      );
-    };
+    this.connection.publish(
+      packet.pattern,
+      JSON.stringify(packet.data),
+      (err, guid) => {
+        if (err) {
+          callback({err})
+        } else {
+          callback({response: guid})
+        }
+      }
+    );
+    return () => {};
   }
 
   protected async dispatchEvent(
-    packet: ReadPacket<{ pattern: string; data: any }>,
+    packet: ReadPacket<{ pattern: string; data: any }>
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       const guid = this.connection.publish(
         packet.pattern,
         JSON.stringify(packet.data),
-        err => {
+        (err) => {
           if (err) {
             reject(err);
           }
           resolve(guid);
-        },
+        }
       );
     });
   }
