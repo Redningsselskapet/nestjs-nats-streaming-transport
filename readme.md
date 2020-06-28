@@ -21,7 +21,7 @@ Exposes the node-nats-streaming library through @ctx context object.
 - **maxPubAcksInflight** (number, default: 16384) - Maximum number of messages a publisher may have in flight without acknowledgment.
 - **maxReconnectAttempts** (number, default: -1) - Maximum number of reconnect attempts (infinite = -1)
 - **name** (string, default:) - Optional client name
-- **nc**
+- **nc** - (Stan, default: ) - nats client
 - **nkey** - (string, default:) - nkeys authentication
 - **noRandomize** (boolean: default: false) - If set, the order of user-specified servers is randomized.
 - **nonceSigner** (Function, default:) - A function that takes a Buffer and returns a nkey signed signature.
@@ -57,11 +57,17 @@ Exposes the node-nats-streaming library through @ctx context object.
   - **startTime** (Date, default: null) - Subscribe starting at a specific time
   - **startWithLastReceived** (boolean, default: false) - Subscribe starting with the most recently published value
 
-## Usage:
+Read more about [nats-streaming-server](https://docs.nats.io/nats-streaming-concepts/intro)
+
+Read more about [node-nats-streaming](https://www.npmjs.com/package/node-nats-streaming)
+
+## nestjs-nats-streaming-transport - code examples:
 
 ### Setup event Publisher
 
 ```javascript
+// app.module.ts
+
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -84,6 +90,9 @@ export class AppModule {}
 ```
 
 ### Publish an Event
+
+// app.service.ts
+
 ```javascript
 import { Injectable } from '@nestjs/common';
 import { Publisher } from '@transport/nats-streaming-transport';
@@ -111,6 +120,8 @@ export class AppService {
 
 ### Setup Event Listener
 ```javascript
+// main.ts
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Listener } from '@nestjs-plugins/nats-streaming-transport';
@@ -146,6 +157,9 @@ bootstrap();
 
 ### Subscribe Handler
 ```javascript
+
+// app.controller.ts
+
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, Payload, Ctx, MessagePattern } from '@nestjs/microservices';
