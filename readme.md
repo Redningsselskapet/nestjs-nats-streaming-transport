@@ -18,6 +18,12 @@ npm i node-nats-streaming
 npm i @nestjs-plugins/nestjs-nats-streaming-transport
 ```
 
+## Running nats-streaming-server in docker
+```bash
+docker run -p 4222:4222 -p 8222:8222 nats-streaming -m 8222 -cid 'vessel-manager' -SD
+```
+
+
 ## TransportConnectOptions
 - **ackTimeout** (number: default: 30000) - Timeout for the server to receive acknowledgement messages from the client in milliseconds.
 - **connectTimeout** (number, default: 2000 ) - Timeout for the client to receive request responses from the nats-streaming-server in milliseconds.
