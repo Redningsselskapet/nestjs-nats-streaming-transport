@@ -8,7 +8,7 @@ import {
   TransportConnectOptions,
   TransportSubscriptionOptions,
 } from './interfaces';
-import { NatsStreamingContext } from './nats-streaming.context.';
+import { NatsStreamingContext } from './nats-streaming.context';
 import { createConnection } from './utils/create-stan-connection';
 import { buildSubscriptionOptions } from './utils/build-subscription-options';
 import { parseMessage } from './utils/parse-message';
