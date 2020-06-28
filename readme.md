@@ -14,6 +14,8 @@ Exposes the node-nats-streaming library through @ctx context object.
 
 ```bash
 npm i @nestjs/microservices
+npm i node-nats-streaming
+npm i @nestjs-pluings/nestjs-nats-streaming-transport
 ```
 
 ## TransportConnectOptions
