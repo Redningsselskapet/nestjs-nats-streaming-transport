@@ -70,11 +70,11 @@ import { NatsStreamingTransport } from '@transport/nats-streaming-transport';
 @Module({
   imports: [
     NatsStreamingTransport.forRoot(
-      'vessel-manager',
-      'test-service-publisher',
+      'vessel-manager'/* clusterID */,
+      'test-service-publisher'/* clientID */,  
       {
         url: 'http://127.0.0.1:4222',
-      }
+      } /* TransportConnectOptions */
     ),
   ],
   controllers: [AppController],
@@ -113,23 +113,23 @@ export class AppService {
 ```javascript
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Listener } from '@transport/nats-streaming-transport/listener';
+import { Listener } from '@nestjs-plugins/nats-streaming-transport';
 import { MicroserviceOptions } from '@nestjs/microservices';
 
 async function bootstrap() {
   const options = {
     strategy: new Listener(
-      'vessel-manager',
-      'test-service-listener',
-      'test-service-group',
+      'vessel-manager' /* clusterID */,
+      'test-service-listener' /* clientID */,
+      'test-service-group', /* queueGroupName */
       {
         url: 'http://127.0.0.1:4222',
-      },
+      } /* TransportConnectOptions */,
       {
         durableName: 'test-queue-group',
         manualAckMode: true,
         deliverAllAvailable: true,
-      },
+      } /* TransportSubriptionOptions */ ,
     ),
   };
 
@@ -149,7 +149,7 @@ bootstrap();
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, Payload, Ctx, MessagePattern } from '@nestjs/microservices';
-import { NatsStreamingContext } from '@transport/nats-streaming-transport/nats-streaming.context.';
+import { NatsStreamingContext } from 'nestjs-plugins/nats-streaming-transport';
 
 @Controller()
 export class AppController {
@@ -160,9 +160,9 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @EventPattern('vessel-created')
-  public async execute(@Payload() data: {id: number, name:string}, @Ctx() context: NatsStreamingContext) {
-      console.log('emit: ', data)
+  @EventPattern('station-created')
+  public async stationCreatedHandler(@Payload() data: {id: number, name:string}, @Ctx() context: NatsStreamingContext) {
+      console.log(data)
       context.message.ack()
   }
 }
