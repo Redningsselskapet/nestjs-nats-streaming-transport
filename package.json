@@ -7,6 +7,10 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Redningsselskapet/nestjs-nats-streaming-transport"
+  },
   "keywords": [
     "nestjs transport microservices nats-streaming"
   ],
