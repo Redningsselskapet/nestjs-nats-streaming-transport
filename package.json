@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-plugins/nestjs-nats-streaming-transport",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Nats Streaming Transport for NestJS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,8 +8,8 @@
     "dist"
   ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/Redningsselskapet/nestjs-nats-streaming-transport"
+    "type": "git",
+    "url": "https://github.com/Redningsselskapet/nestjs-nats-streaming-transport"
   },
   "keywords": [
     "nestjs transport microservices nats-streaming"
