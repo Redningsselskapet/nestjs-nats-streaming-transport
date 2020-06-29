@@ -12,7 +12,7 @@
     "url": "https://github.com/Redningsselskapet/nestjs-nats-streaming-transport"
   },
   "keywords": [
-    "nestjs transport microservices nats-streaming"
+    "nestjs", "transport", "microservices", "nats-streaming"
   ],
   "scripts": {
     "test": "echo \"no test specified\"",
