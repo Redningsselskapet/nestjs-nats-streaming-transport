@@ -14,7 +14,6 @@ Exposes the node-nats-streaming library through @ctx context object.
 
 ```bash
 npm i @nestjs/microservices
-npm i node-nats-streaming
 npm i @nestjs-plugins/nestjs-nats-streaming-transport
 ```
 
@@ -77,7 +76,7 @@ Read more about [node-nats-streaming](https://www.npmjs.com/package/node-nats-st
 
 ### Setup event Publisher
 
-Pass the module options to the static forRoot function defined on the NatsStreamingTransport class. These options ared use with the Publisher object provision.
+Pass the module options to the static forRoot function defined on the NatsStreamingTransport class. These options are use with the Publisher object provision.
  
 ```javascript
 static forRoot(
