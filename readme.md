@@ -202,7 +202,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @EventPattern('user-created)
+  @EventPattern('user-created')
   public async stationCreatedHandler(@Payload() data: {id: number, name:string}, @Ctx() context: NatsStreamingContext) {
       console.log(data)
       context.message.ack()
