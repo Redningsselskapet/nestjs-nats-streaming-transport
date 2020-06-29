@@ -139,7 +139,12 @@ export class AppService {
 The Listener object subcribes to events and the constructor takes 5 parameters.
 
 ```javascript
-  new Listener(clusterID: string, clientID: string, queueGroupName: string, connectOptions: TransportConnectOptions, private subscriptionOptions: TransportSubscriptionOptions)
+  constructor(
+    clusterID: string, 
+    clientID: string, 
+    queueGroupName: string, 
+    connectOptions: TransportConnectOptions, 
+    subscriptionOptions: TransportSubscriptionOptions)
 ```
 
 ```javascript
