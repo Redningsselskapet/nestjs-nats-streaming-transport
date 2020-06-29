@@ -20,7 +20,7 @@ npm i @nestjs-plugins/nestjs-nats-streaming-transport
 
 ## Running nats-streaming-server in docker
 ```bash
-docker run -p 4222:4222 -p 8222:8222 nats-streaming -m 8222 -cid 'vessel-manager' -SD
+docker run -p 4222:4222 -p 8222:8222 nats-streaming -m 8222 -cid 'my-cluster' -SD
 ```
 
 
@@ -77,6 +77,16 @@ Read more about [node-nats-streaming](https://www.npmjs.com/package/node-nats-st
 
 ### Setup event Publisher
 
+Pass the module options to the static forRoot function defined on the NatsStreamingTransport class. These options ared use with the Publisher object provision.
+ 
+```javascript
+static forRoot(
+    clusterID: string,
+    clientID: string,
+    connectOptions: TransportConnectOptions,
+  ): DynamicModule
+```
+
 ```javascript
 // app.module.ts
 
@@ -88,8 +98,8 @@ import { NatsStreamingTransport } from '@transport/nats-streaming-transport';
 @Module({
   imports: [
     NatsStreamingTransport.forRoot(
-      'vessel-manager'/* clusterID */,
-      'test-service-publisher'/* clientID */,  
+      'my-cluster'/* clusterID */,
+      'user-service-publisher'/* clientID */,  
       {
         url: 'http://127.0.0.1:4222',
       } /* TransportConnectOptions */
@@ -112,25 +122,27 @@ import { stringify } from 'querystring';
 
 interface VesselCreatedEvent {id: number, name: string }
 
-const enum Subjects {
-  VesselCreated = 'vessel-created'
-}
-
 @Injectable()
 export class AppService {
 
   constructor(private publisher: Publisher) {}
 
   getHello(): string {
-   this.publisher.emit<void,VesselCreatedEvent>(Subjects.VesselCreated, {id: 136, name: 'RS Halfdan Grieg'})
+   this.publisher.emit<void,VesselCreatedEvent>('user-created', {id: 1, name: 'Bernt Anker'})
     return 'Hello Bernt!';
   }
 }
 
 ```
 
-
 ### Setup Event Listener
+
+The Listener object subcribes to events and the constructor takes 5 parameters.
+
+```javascript
+  new Listener(clusterID: string, clientID: string, queueGroupName: string, connectOptions: TransportConnectOptions, private subscriptionOptions: TransportSubscriptionOptions)
+```
+
 ```javascript
 // main.ts
 
@@ -142,14 +154,14 @@ import { MicroserviceOptions } from '@nestjs/microservices';
 async function bootstrap() {
   const options = {
     strategy: new Listener(
-      'vessel-manager' /* clusterID */,
-      'test-service-listener' /* clientID */,
-      'test-service-group', /* queueGroupName */
+      'my-cluster' /* clusterID */,
+      'user-service-listener' /* clientID */,
+      'user-service-group', /* queueGroupName */
       {
         url: 'http://127.0.0.1:4222',
       } /* TransportConnectOptions */,
       {
-        durableName: 'test-queue-group',
+        durableName: 'user-queue-group',
         manualAckMode: true,
         deliverAllAvailable: true,
       } /* TransportSubriptionOptions */ ,
@@ -186,7 +198,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @EventPattern('station-created')
+  @EventPattern('user-created)
   public async stationCreatedHandler(@Payload() data: {id: number, name:string}, @Ctx() context: NatsStreamingContext) {
       console.log(data)
       context.message.ack()
