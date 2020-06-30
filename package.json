@@ -22,7 +22,7 @@
     "build": "rimraf dist && tsc",
     "watch": "tsc -w"
   },
-  "author": "Bernt Anker (bernt.anker@gmail.com)",
+  "author": "Bernt Anker [bernt.anker@gmail.com]",
   "license": "ISC",
   "dependencies": {
     "node-nats-streaming": "^0.3.2",
