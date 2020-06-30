@@ -84,7 +84,7 @@ A simple Event interface used in this example
     username: string
 }
 ```
-A simple enum to describe pattern used in publisher and listeners subjects.
+A simple enum to describe pattern used as subjects.
 ```javascript
 // '@app/events
 
