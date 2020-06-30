@@ -91,6 +91,7 @@ A simple enum to describe pattern used in publisher and listeners subjects.
 export enum Patterns {
   UserCreated = 'user:created'  
 }
+
 ```
 
 ### Setup event Publisher
@@ -101,28 +102,23 @@ export enum Patterns {
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {NatsStreamingTransport, TransportConnectOptions} from '@nestjs-plugins/nestjs-nats-streaming-transport'
-
-const options: TransportConnectOptions = {
-  url: 'http://128.0.0.1:4222'
-}
-const clusterID: string = 'my-cluster'
-const clientID: string = 'user-service'
+import { NatsStreamingTransport } from '@nestjs-plugins/nestjs-nats-streaming-transport'
 
 @Module({
   imports: [
-    NatsStreamingTransport.forRoot(
-      'my-cluster'/* clusterID */,
-      'user-service-publisher'/* clientID */,  
-      {
-        url: 'http://127.0.0.1:4222',
-      } /* TransportConnectOptions */
-    ),
+     NatsStreamingTransport.forRoot(
+       'my-cluster'/* clusterID */,
+       'user-service-publisher'/* clientID */, 
+       {
+         url: 'http://127.0.0.1:4222',
+       } /* TransportConnectOptions */
+     ),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+
 ```
 
 ### Publish an Event
@@ -132,21 +128,22 @@ export class AppModule {}
 
 import { Injectable } from '@nestjs/common';
 import { Publisher } from '@nestjs-plugins/nestjs-nats-streaming-transport';
-import {UserCreatedEvent, Patterns} from '@app/events'
+import { UserCreatedEvent, Patterns } from '@app/events'
 
 @Injectable()
 export class AppService {
- 
-  constructor(private publisher: Publisher) {}
- 
+
+  constructor(private publisher: Publisher) { }
+
   getHello(): string {
-    const event: UserCreatedEvent = {id: Math.floor(Math.random() * Math.floor(1000)), username: 'bernt'}
-   this.publisher.emit<string,UserCreatedEvent>(Patterns.UserCreated, event).subscribe(guid => {
-     console.log('published message with guid:', guid)
-   })
+    const event: UserCreatedEvent = { id: Math.floor(Math.random() * Math.floor(1000)), username: 'bernt' }
+    this.publisher.emit<string, UserCreatedEvent>(Patterns.UserCreated, event).subscribe(guid => {
+      console.log('published message with guid:', guid)
+    })
     return `published message: ${JSON.stringify(event)}`
   }
 }
+
 ```
 
 ### Setup Event Listener
@@ -166,7 +163,7 @@ async function bootstrap() {
       'user-service-listener' /* clientID */,
       'user-service-group', /* queueGroupName */
       {
-        url: 'http://127.0.0.1:4222',
+        url: 'http://127.0.0.1:4222'
       } /* TransportConnectOptions */,
       {
         durableName: 'user-queue-group',
@@ -176,15 +173,13 @@ async function bootstrap() {
     ),
   };
  
-  const microservice = await NestFactory.createMicroservice<
-    CustomStrategy
-  >(AppModule, options);
-  await microservice.listen(() => console.log('Microservice is listening'));
-
+  // hybrid microservice and web application
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  const microService = app.connectMicroservice(options)
+  microService.listen(() => app.listen(3000))
 }
 bootstrap();
+
 ```
 
 ### Subscribe Handler
@@ -200,7 +195,7 @@ import { Patterns } from '@app/events';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get()
   getHello(): string {
@@ -208,9 +203,10 @@ export class AppController {
   }
 
   @EventPattern(Patterns.UserCreated)
-  public async stationCreatedHandler(@Payload() data: {id: number, name:string}, @Ctx() context: NatsStreamingContext) {
-      console.log(`received message: ${JSON.stringify(data)}`)
-      context.message.ack()
+  public async stationCreatedHandler(@Payload() data: { id: number, name: string }, @Ctx() context: NatsStreamingContext) {
+    console.log(`received message: ${JSON.stringify(data)}`)
+    context.message.ack()
   }
 }
+
 ```
