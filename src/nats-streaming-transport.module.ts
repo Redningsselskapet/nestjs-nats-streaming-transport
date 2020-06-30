@@ -1,14 +1,13 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { TransportConnectOptions } from './interfaces';
-import { Publisher } from './publisher';
+import { DynamicModule, Module } from "@nestjs/common";
+import { TransportConnectOptions } from "./interfaces";
+import { Publisher } from "./publisher";
 
 @Module({})
 export class NatsStreamingTransport {
-  
   static forRoot(
     clusterID: string,
     clientID: string,
-    connectOptions: TransportConnectOptions,
+    connectOptions: TransportConnectOptions
   ): DynamicModule {
     const providers = [
       {
