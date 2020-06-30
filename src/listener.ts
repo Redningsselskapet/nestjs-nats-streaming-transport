@@ -12,7 +12,6 @@ import { NatsStreamingContext } from './nats-streaming.context';
 import { createConnection } from './utils/create-stan-connection';
 import { buildSubscriptionOptions } from './utils/build-subscription-options';
 import { parseMessage } from './utils/parse-message';
-import { Buffer } from 'buffer';
 
 export class Listener extends Server implements CustomTransportStrategy {
   transportId?: Transport;
