@@ -1,8 +1,8 @@
-import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
-import { TransportConnectOptions } from './interfaces';
-import { Logger, Injectable } from '@nestjs/common';
-import { Stan } from 'node-nats-streaming';
-import { createConnection } from './utils/create-stan-connection';
+import { ClientProxy, ReadPacket, WritePacket } from "@nestjs/microservices";
+import { TransportConnectOptions } from "./interfaces";
+import { Logger, Injectable } from "@nestjs/common";
+import { Stan } from "node-nats-streaming";
+import { createConnection } from "./utils/create-stan-connection";
 
 @Injectable()
 export class Publisher extends ClientProxy {
@@ -16,6 +16,17 @@ export class Publisher extends ClientProxy {
   ) {
     super();
     this.logger = new Logger(this.constructor.name);
+    console.log(connectOptions);
+  }
+
+  async onApplicationBootstrap() {
+    this.connection = await createConnection(
+      this.clusterID,
+      this.clientID,
+      this.connectOptions
+    );
+
+    this.logger.log("Publisher - Connected early to nats.");
   }
 
   async connect(): Promise<Stan> {
@@ -27,7 +38,7 @@ export class Publisher extends ClientProxy {
       this.clientID,
       this.connectOptions
     );
-    this.logger.log('Publisher - Connected to nats.');
+    this.logger.log("Publisher - Connected to nats.");
   }
 
   close() {
@@ -43,9 +54,9 @@ export class Publisher extends ClientProxy {
       JSON.stringify(packet.data),
       (err, guid) => {
         if (err) {
-          callback({err})
+          callback({ err });
         } else {
-          callback({response: guid})
+          callback({ response: guid });
         }
       }
     );
