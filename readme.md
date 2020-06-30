@@ -74,25 +74,40 @@ Read more about [node-nats-streaming](https://www.npmjs.com/package/node-nats-st
 
 ## nestjs-nats-streaming-transport - code examples:
 
-### Setup event Publisher
 
-Pass the module options to the static forRoot function defined on the NatsStreamingTransport class. These options are use with the Publisher object provision.
- 
+A simple Event interface used in this example
 ```javascript
-static forRoot(
-    clusterID: string,
-    clientID: string,
-    connectOptions: TransportConnectOptions,
-  ): DynamicModule
+  // @app/events;
+  
+  export interface UserCreatedEvent {
+    id: number,
+    username: string
+}
 ```
+A simple enum to describe pattern used in publisher and listeners subjects.
+```javascript
+// '@app/events
+
+export enum Patterns {
+  UserCreated = 'user:created'  
+}
+```
+
+### Setup event Publisher
 
 ```javascript
 // app.module.ts
-
+ 
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { NatsStreamingTransport } from '@transport/nats-streaming-transport';
+import {NatsStreamingTransport, TransportConnectOptions} from '@nestjs-plugins/nestjs-nats-streaming-transport'
+
+const options: TransportConnectOptions = {
+  url: 'http://128.0.0.1:4222'
+}
+const clusterID: string = 'my-cluster'
+const clientID: string = 'user-service'
 
 @Module({
   imports: [
@@ -112,51 +127,40 @@ export class AppModule {}
 
 ### Publish an Event
 
+```javascript
 // app.service.ts
 
-```javascript
 import { Injectable } from '@nestjs/common';
-import { Publisher } from '@transport/nats-streaming-transport';
-import { stringify } from 'querystring';
-
-interface VesselCreatedEvent {id: number, name: string }
+import { Publisher } from '@nestjs-plugins/nestjs-nats-streaming-transport';
+import {UserCreatedEvent, Patterns} from '@app/events'
 
 @Injectable()
 export class AppService {
-
+ 
   constructor(private publisher: Publisher) {}
-
+ 
   getHello(): string {
-   this.publisher.emit<void,VesselCreatedEvent>('user-created', {id: 1, name: 'Bernt Anker'})
-    return 'Hello Bernt!';
+    const event: UserCreatedEvent = {id: Math.floor(Math.random() * Math.floor(1000)), username: 'bernt'}
+   this.publisher.emit<string,UserCreatedEvent>(Patterns.UserCreated, event).subscribe(guid => {
+     console.log('published message with guid:', guid)
+   })
+    return `published message: ${JSON.stringify(event)}`
   }
 }
-
 ```
 
 ### Setup Event Listener
-
-The Listener object subcribes to events and the constructor takes 5 parameters.
-
-```javascript
-  constructor(
-    clusterID: string, 
-    clientID: string, 
-    queueGroupName: string, 
-    connectOptions: TransportConnectOptions, 
-    subscriptionOptions: TransportSubscriptionOptions)
-```
 
 ```javascript
 // main.ts
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Listener } from '@nestjs-plugins/nats-streaming-transport';
-import { MicroserviceOptions } from '@nestjs/microservices';
-
+import { Listener } from '@nestjs-plugins/nestjs-nats-streaming-transport'
+import { CustomStrategy } from '@nestjs/microservices';
 async function bootstrap() {
-  const options = {
+
+  const options: CustomStrategy = {
     strategy: new Listener(
       'my-cluster' /* clusterID */,
       'user-service-listener' /* clientID */,
@@ -168,12 +172,12 @@ async function bootstrap() {
         durableName: 'user-queue-group',
         manualAckMode: true,
         deliverAllAvailable: true,
-      } /* TransportSubriptionOptions */ ,
+      } /* TransportSubscriptionOptions */ ,
     ),
   };
-
+ 
   const microservice = await NestFactory.createMicroservice<
-    MicroserviceOptions
+    CustomStrategy
   >(AppModule, options);
   await microservice.listen(() => console.log('Microservice is listening'));
 
@@ -184,14 +188,15 @@ bootstrap();
 ```
 
 ### Subscribe Handler
-```javascript
 
+```javascript
 // app.controller.ts
 
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EventPattern, Payload, Ctx, MessagePattern } from '@nestjs/microservices';
-import { NatsStreamingContext } from 'nestjs-plugins/nats-streaming-transport';
+import { EventPattern, Payload, Ctx } from '@nestjs/microservices';
+import { NatsStreamingContext } from '@nestjs-plugins/nestjs-nats-streaming-transport';
+import { Patterns } from '@app/events';
 
 @Controller()
 export class AppController {
@@ -202,9 +207,9 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @EventPattern('user-created')
+  @EventPattern(Patterns.UserCreated)
   public async stationCreatedHandler(@Payload() data: {id: number, name:string}, @Ctx() context: NatsStreamingContext) {
-      console.log(data)
+      console.log(`received message: ${JSON.stringify(data)}`)
       context.message.ack()
   }
 }
