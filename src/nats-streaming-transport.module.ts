@@ -4,11 +4,7 @@ import { Publisher } from './publisher';
 
 @Module({})
 export class NatsStreamingTransport {
-
-  constructor(publisher: Publisher) {
-    // connect early to avoid startup delay
-    publisher.connect()
-  }
+  
   static forRoot(
     clusterID: string,
     clientID: string,
