@@ -43,6 +43,7 @@ export class Publisher extends ClientProxy {
 
   close() {
     this.connection.close();
+    this.connection = null;
   }
 
   protected publish(
