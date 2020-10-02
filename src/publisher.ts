@@ -16,7 +16,6 @@ export class Publisher extends ClientProxy {
   ) {
     super();
     this.logger = new Logger(this.constructor.name);
-    console.log(connectOptions);
   }
 
   async onApplicationBootstrap() {
