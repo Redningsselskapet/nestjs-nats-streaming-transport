@@ -1,8 +1,9 @@
 import { ClientProxy, ReadPacket, WritePacket } from "@nestjs/microservices";
-import { TransportConnectOptions } from "./interfaces";
-import { Logger, Injectable } from "@nestjs/common";
+import { NatsStreamingPublishOptions } from "./interfaces";
+import { Logger, Injectable, Inject } from "@nestjs/common";
 import { Stan } from "node-nats-streaming";
 import { createConnection } from "./utils/create-stan-connection";
+import { NATS_STREAMING_OPTIONS } from "./constants";
 
 @Injectable()
 export class Publisher extends ClientProxy {
@@ -10,19 +11,18 @@ export class Publisher extends ClientProxy {
   private connection: Stan;
 
   constructor(
-    private clusterID: string,
-    private clientID: string,
-    private connectOptions: TransportConnectOptions
+    @Inject(NATS_STREAMING_OPTIONS) private options: NatsStreamingPublishOptions
   ) {
     super();
+    console.log(options)
     this.logger = new Logger(this.constructor.name);
   }
 
   async onApplicationBootstrap() {
     this.connection = await createConnection(
-      this.clusterID,
-      this.clientID,
-      this.connectOptions
+      this.options.clusterId,
+      this.options.clientId,
+      this.options.connectOptions
     );
 
     this.logger.log("Publisher - Connected early to nats.");
@@ -33,9 +33,9 @@ export class Publisher extends ClientProxy {
       return Promise.resolve(this.connection);
     }
     this.connection = await createConnection(
-      this.clusterID,
-      this.clientID,
-      this.connectOptions
+      this.options.clusterId,
+      this.options.clientId,
+      this.options.connectOptions
     );
     this.logger.log("Publisher - Connected to nats.");
   }

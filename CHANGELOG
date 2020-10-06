@@ -1,1 +1,4 @@
-v
+# v1.0.16
+
+- Support for async factory providers
+- Change from forRoot to register and registerAsync for module configuration. forRoot is depricated and will be removed on next release.

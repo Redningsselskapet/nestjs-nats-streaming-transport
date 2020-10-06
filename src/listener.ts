@@ -19,11 +19,11 @@ export class Listener extends Server implements CustomTransportStrategy {
 
   // TODO - create own logger or set logname to This class.
   constructor(
-    private clusterID: string,
-    private clientID: string,
+    private clusterId: string,
+    private clientId: string,
     private queueGroup: string,
     private connectOptions: TransportConnectOptions,
-    private subscriptionOptions: TransportSubscriptionOptions,
+    private subscriptionOptions: TransportSubscriptionOptions
   ) {
     super();
   }
@@ -32,9 +32,9 @@ export class Listener extends Server implements CustomTransportStrategy {
   async listen(callback: () => void) {
     this.logger.log('Setting up event listeners...');
     this.connection = await createConnection(
-      this.clusterID,
-      this.clientID,
-      this.connectOptions,
+      this.clusterId,
+      this.clientId,
+      this.connectOptions
     );
     this.bindEventHandlers();
 
@@ -52,15 +52,15 @@ export class Listener extends Server implements CustomTransportStrategy {
     if (!registerdPatterns) {
       this.logger.log('No message handlers registered');
     }
-    registerdPatterns.forEach(subject => {
+    registerdPatterns.forEach((subject) => {
       const options = buildSubscriptionOptions(
         this.subscriptionOptions,
-        this.connection,
+        this.connection
       );
       const subscription = this.connection.subscribe(
         subject,
         this.queueGroup,
-        options,
+        options
       );
       subscription.on('message', (msg: Message) => {
         const handler = this.getHandlerByPattern(subject);

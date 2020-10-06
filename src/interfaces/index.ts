@@ -1,3 +1,4 @@
+import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { StanOptions, StartPosition } from 'node-nats-streaming';
 
 export type TransportConnectOptions = StanOptions;
@@ -14,3 +15,15 @@ export interface TransportSubscriptionOptions {
   startWithLastReceived?: boolean;
 }
 
+
+export interface NatsStreamingPublishOptions {
+  clusterId: string,
+  clientId: string,
+  // queueGroup: string
+  connectOptions: TransportConnectOptions
+}
+
+export interface NatsStreamingPublishAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+  useFactory: (...args: any[]) => Promise<NatsStreamingPublishOptions> | NatsStreamingPublishOptions;
+  inject?: any[]
+}
