@@ -48,6 +48,7 @@ export class NatsStreamingTransport {
         },
         Publisher,
       ],
+      exports: [Publisher]
     };
   }
 }

@@ -14,7 +14,6 @@ export class Publisher extends ClientProxy {
     @Inject(NATS_STREAMING_OPTIONS) private options: NatsStreamingPublishOptions
   ) {
     super();
-    console.log(options)
     this.logger = new Logger(this.constructor.name);
   }
 
@@ -24,7 +23,7 @@ export class Publisher extends ClientProxy {
       this.options.clientId,
       this.options.connectOptions
     );
-
+    
     this.logger.log("Publisher - Connected early to nats.");
   }
 
