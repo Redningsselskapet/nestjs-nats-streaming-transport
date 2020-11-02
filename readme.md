@@ -106,12 +106,14 @@ import { NatsStreamingTransport } from '@nestjs-plugins/nestjs-nats-streaming-tr
 
 @Module({
   imports: [
-     NatsStreamingTransport.forRoot(
-       'my-cluster'/* clusterID */,
-       'user-service-publisher'/* clientID */, 
+     NatsStreamingTransport.register(
        {
-         url: 'http://127.0.0.1:4222',
-       } /* TransportConnectOptions */
+        clientId: 'user-service-publisher',
+        clusterId: 'my-cluster',
+        connectOptions: {
+          url: 'http://127.0.0.1:4222',
+        },
+      }
      ),
   ],
   controllers: [AppController],
