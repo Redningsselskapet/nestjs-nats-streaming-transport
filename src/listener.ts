@@ -32,12 +32,11 @@ export class Listener extends Server implements CustomTransportStrategy {
   async listen(callback: () => void) {
     this.logger.log('Setting up event listeners...');
     this.connection = await createConnection(
-      this.clusterId,
-      this.clientId,
-      this.connectOptions
+    this.clusterId,
+    this.clientId,
+    this.connectOptions
     );
     this.bindEventHandlers();
-
     callback();
   }
 
@@ -62,11 +61,12 @@ export class Listener extends Server implements CustomTransportStrategy {
         this.queueGroup,
         options
       );
-      subscription.on('message', (msg: Message) => {
+      subscription.on('message', async (msg: Message) => {
         const handler = this.getHandlerByPattern(subject);
         const data = parseMessage(msg);
         const context = new NatsStreamingContext([msg]);
-        handler(data, context);
+        const stream = this.transformToObservable(await handler(data, context))
+        this.send(stream, () => null)
       });
       this.logger.log(`Subscribed to ${subject}`);
     });
