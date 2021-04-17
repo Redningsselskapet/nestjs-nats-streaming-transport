@@ -4,6 +4,7 @@ import { StanOptions, StartPosition } from 'node-nats-streaming';
 export type TransportConnectOptions = StanOptions;
 
 export interface TransportSubscriptionOptions {
+  ackWait?: number;
   deliverAllAvailable?: boolean;
   durableName?: string;
   manualAckMode?: boolean;

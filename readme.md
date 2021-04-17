@@ -57,7 +57,8 @@ docker run -p 4222:4222 -p 8222:8222 nats-streaming -m 8222 -cid 'my-cluster' -S
 - **waitOnFirstConnect** (boolean, default: false) - If true the server will fall back to a reconnect mode if it fails its first connection attempt.
 - **yieldTime** (number, default:) - If set, processing will yield at least the specified number of milliseconds to IO callbacks before processing inbound messages
 
-## TransportSubscriptionOptions 
+## TransportSubscriptionOptions
+  - **ackWait** (number, default: 30 * 1000) - Attempt redelivery of the message if an acknowledgement is not received within the configured timeout interval.
   - **deliverAllAvailable** (string, default: false) - Receive all stored values in order
   - **durableName** (string, default: "") - Track the last acknowledged message for that clientID + durable name. Only messages since the last acknowledged message will be delivered to the client.
   - **manualAckMode** (boolean, default: false) - Manual acknowledgement mode on the subscription. Default is to automatically acknowledge messsages.

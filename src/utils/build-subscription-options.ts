@@ -6,6 +6,7 @@ export const buildSubscriptionOptions = (
   connection: Stan,
 ) => {
   const {
+    ackWait,
     startAt,
     deliverAllAvailable,
     durableName,
@@ -17,6 +18,7 @@ export const buildSubscriptionOptions = (
     startWithLastReceived,
   } = transportSubscriptionOptions;
   const opts = connection.subscriptionOptions();
+  ackWait && opts.setAckWait(ackWait);
   startAt && opts.setStartAt(startAt);
   deliverAllAvailable && opts.setDeliverAllAvailable();
   durableName && opts.setDurableName(durableName);
