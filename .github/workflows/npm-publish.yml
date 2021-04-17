@@ -12,7 +12,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-          check-latest: true
           registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm run build
