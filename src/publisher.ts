@@ -7,8 +7,7 @@ import { NATS_STREAMING_OPTIONS } from "./constants";
 
 @Injectable()
 export class Publisher extends ClientProxy {
-  protected publish(packet: ReadPacket<any>, callback: (packet: WritePacket<any>) => void): () => void {
-    console.log('publish bernt');  
+  protected publish(packet: ReadPacket<any>, callback: (packet: WritePacket<any>) => void): () => void {  
     this.connection.publish(
       packet.pattern,
       JSON.stringify(packet.data),
