@@ -7,6 +7,22 @@ import { NATS_STREAMING_OPTIONS } from "./constants";
 
 @Injectable()
 export class Publisher extends ClientProxy {
+  protected publish(packet: ReadPacket<any>, callback: (packet: WritePacket<any>) => void): () => void {
+    console.log('publish bernt');  
+    this.connection.publish(
+      packet.pattern,
+      JSON.stringify(packet.data),
+      (err, guid) => {
+        if (err) {
+          callback({ err });
+        } else {
+          callback({ response: guid });
+        }
+      }
+    );
+    return () => {};
+  }
+
   private logger: Logger;
   private connection: Stan;
 
@@ -23,7 +39,7 @@ export class Publisher extends ClientProxy {
       this.options.clientId,
       this.options.connectOptions
     );
-    
+
     this.logger.log("Publisher - Connected early to nats.");
   }
 
@@ -42,24 +58,6 @@ export class Publisher extends ClientProxy {
   close() {
     this.connection.close();
     this.connection = null;
-  }
-
-  protected publish(
-    packet: ReadPacket<any>,
-    callback: (packet: WritePacket) => any
-  ): Function {
-    this.connection.publish(
-      packet.pattern,
-      JSON.stringify(packet.data),
-      (err, guid) => {
-        if (err) {
-          callback({ err });
-        } else {
-          callback({ response: guid });
-        }
-      }
-    );
-    return () => {};
   }
 
   protected async dispatchEvent(
